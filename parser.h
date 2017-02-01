@@ -7,8 +7,7 @@
 
 #ifndef parser_h
 #define parser_h
-#define FILE_PATH "/Users/mdkabir/Desktop/ChessLearning/ChessLearning" //setup path
-//include required
+
 #include <unordered_map>
 #include <string>
 #include <fstream>
@@ -23,8 +22,8 @@ namespace InfoProcess {
     public:
         PgnParser(const std::string& filename);         // constructor
         std::string getInfo(const std::string& key);    // method info about the event
-        std::deque<std::string> whiteMoveset;           // method the white moveset
-        std::deque<std::string> blackMoveset;           // method the white moveset
+        std::deque<std::string> whiteMoveset();         // method the white moveset
+        std::deque<std::string> blackMoveset();         // method the white moveset
         
         
     private:

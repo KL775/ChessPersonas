@@ -1,8 +1,8 @@
 //
-//  file: parser.h
+//  file: parser.cpp
 //  Chess Persona Modeling
 //
-//  info: file PgnParser Class Signature
+//  info: file PgnParser Class Definition
 //
 
 
@@ -14,11 +14,11 @@ using namespace std;
 using namespace InfoProcess;
 
 // Constructor Definition
-PgnParser::PgnParser(const string& filename){
-    ifstream pgn(filename); // setup the file
+PgnParser::PgnParser(const string& pathToFile){
+    ifstream pgn(pathToFile); // setup the file
     //check if the file exists
     if(!pgn){
-        cerr<<"Error File: "<< filename << endl;
+        cerr<<"Error File: "<< pathToFile << endl;
         exit(-5);
     }
     //go until the beginning of the moves
@@ -33,25 +33,40 @@ PgnParser::PgnParser(const string& filename){
         //map the info
         eventInfo[data.substr(0,data.find(' '))] = data.substr(data.find(' ')+2);
     }
-
     
+    string moveline;        // setup variable to store moveline
+    getline(pgn,moveline);  // skip one line
+    getline(pgn,moveline);  // store moveline
     
+    istringstream data(moveline);   // setup string stream to process data
+    string dataToken;               // setup token to store data
+    int roundToken = 0;             // setup token to track turn and round
+    while(getline(data,dataToken,' ')){
+        ++roundToken; //increment round token every iteration
+        
+        //check if it's white or black player's turn
+        if(roundToken == 2){
+            whiteMoveSet.push_back(dataToken);
+        }
+        else if(roundToken == 3){
+            blackMoveSet.push_back(dataToken);
+            roundToken = 0;
+        }
+        
+    }
 }
 
+//event info method definition
+string PgnParser::getInfo(const string& key){
+    return eventInfo[key];
+}
 
+//method to get the white moveset
+deque<string> PgnParser::whiteMoveset(){
+    return whiteMoveSet;
+}
 
-/*
-
- std::string getInfo(const std::string& key){    //method info about the event
- return eventInfo[key];
- }
- 
- std::deque<std::string> whiteMoveset(){         //method the white moveset
- return whiteMoveSet;
- }
- 
- std::deque<std::string> blackMoveset(){         //method the white moveset
- return blackMoveSet;
- }
-
-*/
+//method to get the black moveset
+deque<string> PgnParser::blackMoveset(){
+    return blackMoveSet;
+}
